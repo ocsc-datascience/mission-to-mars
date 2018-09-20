@@ -1,0 +1,31 @@
+.myheader {
+    font-size: 3.5rem;
+}
+
+.myheader2 {
+    font-size: 1.8rem;
+}
+
+.myheader3 {
+    font-size: 1.2rem;
+}
+
+.myborder {
+    border-style: solid;
+    border-width: 1px;
+    padding: 15px;
+}
+
+table, th, td {
+    border: solid 1px black;
+}
+
+th {
+    text-align: left;
+}
+
+.card-img-top {
+    width: 100%;
+/*    height: 15vw; */
+    object-fit: cover;
+}
