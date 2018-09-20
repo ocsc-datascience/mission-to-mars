@@ -65,16 +65,38 @@ def scrape():
    # get Mars hemisphere images by checking out https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars
    # Not sure if it makes sense to serve 20 MBs-size pictures...
    # Also saving lower-res thumbnail urls.
-   hemisphere_image_urls = [
-      {"title": "Valles Marineris Hemisphere", "lr_img_url": "http://astropedia.astrogeology.usgs.gov/download/Mars/Viking/valles_marineris_enhanced.tif/full.jpg",
-        "hr_img_url": "http://astropedia.astrogeology.usgs.gov/download/Mars/Viking/valles_marineris_enhanced.tif"},
-       {"title": "Cerberus Hemisphere", "lr_img_url": "https://astropedia.astrogeology.usgs.gov/download/Mars/Viking/cerberus_enhanced.tif/full.jpg",
-        "hr_img_url": "http://astropedia.astrogeology.usgs.gov/download/Mars/Viking/cerberus_enhanced.tif"},
-       {"title": "Schiaparelli Hemisphere", "lr_img_url": "http://astropedia.astrogeology.usgs.gov/download/Mars/Viking/schiaparelli_enhanced.tif/full.jpg",
-        "hr_img_url": "http://astropedia.astrogeology.usgs.gov/download/Mars/Viking/schiaparelli_enhanced.tif"},
-       {"title": "Syrtis Major Hemisphere", "lr_img_url": "http://astropedia.astrogeology.usgs.gov/download/Mars/Viking/syrtis_major_enhanced.tif/full.jpg",
-        "hr_img_url": "http://astropedia.astrogeology.usgs.gov/download/Mars/Viking/syrtis_major_enhanced.tif"},
-   ]
+   target_url="https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars"
+   base_url="https://astrogeology.usgs.gov"
+   browser.visit(target_url)
+   html = browser.html
+   soup = BeautifulSoup(html, 'html.parser')
+   res = soup.find('div', class_='collapsible results')
+   mlist = res.find_all('div',class_='item')
+
+   hemisphere_image_urls = []
+   for item in mlist:
+      ar = item.find('a',class_='itemLink')
+      xurl = base_url+ar['href']
+      print(xurl)
+      browser.visit(xurl)
+      html = browser.html
+      soup = BeautifulSoup(html, 'html.parser')
+      # title
+      res = soup.find('div', class_='content')
+      tit = res.find('h2', class_='title')
+
+      md = {}
+      md['title'] = tit.text
+    
+      # links
+      res = soup.find('div', class_='downloads')
+      lis = res.find_all('li')
+      md['lr_img_url'] = lis[0].find('a')['href']
+      md['hr_img_url'] = lis[1].find('a')['href']
+     
+      hemisphere_image_urls.append(md)
+    
+   print(hemisphere_image_urls)
 
    mars_dict['mars_hemisphere_image_urls'] = hemisphere_image_urls
 
